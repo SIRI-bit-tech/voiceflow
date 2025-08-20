@@ -21,6 +21,13 @@ export class ApiClient {
     });
     return res.json();
   }
+
+  async listContent(workspaceId?: string): Promise<any[]> {
+    const url = new URL(`${this.baseUrl}/api/content`);
+    if (workspaceId) url.searchParams.set('workspace_id', workspaceId);
+    const res = await fetch(url.toString(), { headers: { ...this.authHeaders } });
+    return res.json();
+  }
 }
 
 

@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { ApiClient } from '../core/services/api.client';
 
 @Component({
   selector: 'app-workspace-page',
@@ -13,5 +15,15 @@ import { CommonModule } from '@angular/common';
   `,
 })
 export class WorkspacePage {}
+export class WorkspacePage {
+  private route = inject(ActivatedRoute);
+  private api = inject(ApiClient);
+  items: any[] = [];
+
+  async ngOnInit(): Promise<void> {
+    const id = this.route.snapshot.paramMap.get('id') || undefined;
+    this.items = await this.api.listContent(id);
+  }
+}
 
 
