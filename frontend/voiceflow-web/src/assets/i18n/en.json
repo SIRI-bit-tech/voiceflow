@@ -1,0 +1,99 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "publish": "Publish",
+    "archive": "Archive",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "workspace": "Workspace",
+    "content": "Content",
+    "settings": "Settings",
+    "logout": "Logout",
+    "spatial_view": "Spatial View",
+    "voice_mode": "Voice Mode",
+    "enable": "Enable",
+    "disable": "Disable"
+  },
+  "voice": {
+    "listening": "Listening...",
+    "processing": "Processing...",
+    "ready": "Ready for voice commands",
+    "not_understood": "I didn't understand that. Please try again.",
+    "command_recognized": "Command recognized",
+    "voice_mode_enabled": "Voice mode enabled",
+    "voice_mode_disabled": "Voice mode disabled",
+    "spatial_audio_enabled": "Spatial audio enabled",
+    "spatial_audio_disabled": "Spatial audio disabled"
+  },
+  "rooms": {
+    "lobby": "Main Lobby",
+    "blog": "Blog Room",
+    "pages": "Pages Wing",
+    "draft": "Draft Corner",
+    "archive": "Archive Basement",
+    "navigating_to": "Navigating to",
+    "in_room": "In",
+    "content_count": "{{count}} items"
+  },
+  "content": {
+    "title": "Content Management",
+    "new_content": "Create New Content",
+    "edit_content": "Edit Content",
+    "content_title": "Title",
+    "content_body": "Body",
+    "content_status": "Status",
+    "content_language": "Language",
+    "draft": "Draft",
+    "published": "Published",
+    "archived": "Archived",
+    "no_content": "No content found in this workspace",
+    "loading_content": "Loading content...",
+    "publishing": "Publishing...",
+    "published_success": "Content published successfully",
+    "publish_error": "Failed to publish content"
+  },
+  "accessibility": {
+    "skip_to_main": "Skip to main content",
+    "workspace_navigation": "Workspace navigation",
+    "spatial_description": "Toggle 3D spatial navigation interface with audio beacons",
+    "voice_description": "Enable voice-controlled navigation and content management",
+    "create_description": "Create a new piece of content in this workspace",
+    "status": "Status",
+    "edit_item": "Edit {{title}}",
+    "publish_item": "Publish {{title}}"
+  },
+  "languages": {
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "de": "German",
+    "it": "Italian",
+    "pt": "Portuguese",
+    "ru": "Russian",
+    "zh": "Chinese",
+    "ja": "Japanese",
+    "ko": "Korean"
+  },
+  "commands": {
+    "navigate": "Navigate to",
+    "show": "Show",
+    "create": "Create",
+    "edit": "Edit",
+    "publish": "Publish",
+    "archive": "Archive",
+    "search": "Search",
+    "move": "Move",
+    "switch": "Switch workspace"
+  }
+}

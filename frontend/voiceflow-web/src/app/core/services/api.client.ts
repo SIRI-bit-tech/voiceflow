@@ -28,6 +28,14 @@ export class ApiClient {
     const res = await fetch(url.toString(), { headers: { ...this.authHeaders } });
     return res.json();
   }
+
+  async publishContent(contentId: string): Promise<any> {
+    const res = await fetch(`${this.baseUrl}/api/content/${contentId}/publish`, {
+      method: 'POST',
+      headers: { ...this.authHeaders },
+    });
+    return res.json();
+  }
 }
 
 
