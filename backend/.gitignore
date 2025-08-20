@@ -1,0 +1,97 @@
+# Python bytecode and cache
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+pip-wheel-metadata/
+
+# Unit test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+coverage/
+htmlcov/
+.hypothesis/
+
+# Type checkers / linters
+.mypy_cache/
+.pytype/
+.ruff_cache/
+
+# Virtual environments & python env managers
+.venv/
+venv/
+env/
+ENV/
+.python-version
+.pdm-python
+__pypackages__/
+
+# Logs
+*.log
+logs/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Local databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Docker / runtime
+*.pid
+
+# Secrets & environment files
+*.pem
+*.key
+*.crt
+.env
+.env.*
+!.env.example
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Generic caches
+.cache/
+**/.cache/
+
