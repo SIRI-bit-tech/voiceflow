@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiClient } from '../core/services/api.client';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-register',
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
@@ -18,12 +18,12 @@ import { ApiClient } from '../core/services/api.client';
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
             </svg>
           </div>
-          <h2 class="text-3xl font-bold text-gray-900">Welcome Back</h2>
-          <p class="mt-2 text-sm text-gray-600">Sign in to your VoiceFlow account</p>
+          <h2 class="text-3xl font-bold text-gray-900">Create Account</h2>
+          <p class="mt-2 text-sm text-gray-600">Join VoiceFlow and start creating with voice</p>
         </div>
 
-        <!-- Login Form -->
-        <form class="mt-8 space-y-6" (ngSubmit)="login()" #loginForm="ngForm">
+        <!-- Registration Form -->
+        <form class="mt-8 space-y-6" (ngSubmit)="register()" #registerForm="ngForm">
           <div class="space-y-4">
             <div>
               <label for="username" class="block text-sm font-medium text-gray-700">
@@ -34,10 +34,26 @@ import { ApiClient } from '../core/services/api.client';
                 name="username"
                 type="text"
                 required
-                [(ngModel)]="credentials.username"
+                [(ngModel)]="userData.username"
                 class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your username"
-                [class.border-red-500]="showError() && !credentials.username"
+                placeholder="Choose a username"
+                [class.border-red-500]="showError() && !userData.username"
+              />
+            </div>
+
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700">
+                Email Address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                [(ngModel)]="userData.email"
+                class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Enter your email"
+                [class.border-red-500]="showError() && !userData.email"
               />
             </div>
 
@@ -50,11 +66,44 @@ import { ApiClient } from '../core/services/api.client';
                 name="password"
                 type="password"
                 required
-                [(ngModel)]="credentials.password"
+                [(ngModel)]="userData.password"
                 class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your password"
-                [class.border-red-500]="showError() && !credentials.password"
+                placeholder="Create a password"
+                [class.border-red-500]="showError() && !userData.password"
               />
+            </div>
+
+            <div>
+              <label for="confirmPassword" class="block text-sm font-medium text-gray-700">
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                required
+                [(ngModel)]="userData.confirmPassword"
+                class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Confirm your password"
+                [class.border-red-500]="showError() && !userData.confirmPassword"
+              />
+            </div>
+
+            <div class="flex items-center">
+              <input
+                id="agree-terms"
+                name="agree-terms"
+                type="checkbox"
+                required
+                [(ngModel)]="userData.agreeTerms"
+                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label for="agree-terms" class="ml-2 block text-sm text-gray-900">
+                I agree to the 
+                <a href="#" class="text-indigo-600 hover:text-indigo-500">Terms of Service</a>
+                and 
+                <a href="#" class="text-indigo-600 hover:text-indigo-500">Privacy Policy</a>
+              </label>
             </div>
           </div>
 
@@ -67,7 +116,7 @@ import { ApiClient } from '../core/services/api.client';
                 </svg>
               </div>
               <div class="ml-3">
-                <h3 class="text-sm font-medium text-red-800">Authentication Failed</h3>
+                <h3 class="text-sm font-medium text-red-800">Registration Failed</h3>
                 <div class="mt-2 text-sm text-red-700">
                   <p>{{ errorMessage() }}</p>
                 </div>
@@ -88,26 +137,16 @@ import { ApiClient } from '../core/services/api.client';
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               </span>
-              {{ isLoading() ? 'Signing in...' : 'Sign in' }}
+              {{ isLoading() ? 'Creating Account...' : 'Create Account' }}
             </button>
           </div>
 
-          <!-- Registration Link -->
+          <!-- Login Link -->
           <div class="text-center">
             <p class="text-sm text-gray-600">
-              Don't have an account? 
-              <a routerLink="/register" class="font-medium text-indigo-600 hover:text-indigo-500">
-                Sign up here
-              </a>
-            </p>
-          </div>
-
-          <!-- Admin Link -->
-          <div class="text-center">
-            <p class="text-sm text-gray-500">
-              Admin access? 
-              <a routerLink="/admin/login" class="font-medium text-gray-600 hover:text-gray-500">
-                Admin login
+              Already have an account? 
+              <a routerLink="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
+                Sign in here
               </a>
             </p>
           </div>
@@ -147,23 +186,45 @@ import { ApiClient } from '../core/services/api.client';
     </div>
   `,
 })
-export class LoginPage {
+export class RegisterPage {
   private router = inject(Router);
   private api = inject(ApiClient);
   
-  credentials = {
+  userData = {
     username: '',
-    password: ''
+    email: '',
+    password: '',
+    confirmPassword: '',
+    agreeTerms: false
   };
   
   isLoading = signal(false);
   showError = signal(false);
   errorMessage = signal('');
   
-  async login(): Promise<void> {
-    if (!this.credentials.username || !this.credentials.password) {
+  async register(): Promise<void> {
+    // Validate form
+    if (!this.userData.username || !this.userData.email || !this.userData.password || !this.userData.confirmPassword) {
       this.showError.set(true);
       this.errorMessage.set('Please fill in all required fields');
+      return;
+    }
+    
+    if (this.userData.password !== this.userData.confirmPassword) {
+      this.showError.set(true);
+      this.errorMessage.set('Passwords do not match');
+      return;
+    }
+    
+    if (this.userData.password.length < 8) {
+      this.showError.set(true);
+      this.errorMessage.set('Password must be at least 8 characters long');
+      return;
+    }
+    
+    if (!this.userData.agreeTerms) {
+      this.showError.set(true);
+      this.errorMessage.set('Please agree to the Terms of Service and Privacy Policy');
       return;
     }
     
@@ -171,7 +232,11 @@ export class LoginPage {
     this.showError.set(false);
     
     try {
-      const response = await this.api.loginUser(this.credentials);
+      const response = await this.api.registerUser({
+        username: this.userData.username,
+        email: this.userData.email,
+        password: this.userData.password
+      });
       
       if (response.access_token) {
         localStorage.setItem('token', response.access_token);
@@ -182,11 +247,9 @@ export class LoginPage {
       }
     } catch (error: any) {
       this.showError.set(true);
-      this.errorMessage.set(error.message || 'Authentication failed. Please check your credentials.');
+      this.errorMessage.set(error.message || 'Registration failed. Please try again.');
     } finally {
       this.isLoading.set(false);
     }
   }
 }
-
-

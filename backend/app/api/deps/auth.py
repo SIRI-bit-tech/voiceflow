@@ -1,42 +1,96 @@
-from typing import Annotated
-from fastapi import Depends, HTTPException, Header
-from jose import jwt, JWTError
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-
 from ...core.config import settings
+from ...core.security import verify_token
 from ...db.session import get_db_session
-from ...models.user import User
-from ...models.user import UserRole
+from ...models.user import User, UserRole
+from ...models.admin import Admin
+
+security = HTTPBearer()
 
 
 async def get_current_user(
-    authorization: Annotated[str | None, Header(alias="Authorization")] = None,
+    credentials: HTTPAuthorizationCredentials = Depends(security),
     db: AsyncSession = Depends(get_db_session),
 ) -> User:
-    if not authorization or not authorization.lower().startswith("bearer "):
-        raise HTTPException(401, detail="Not authenticated")
-    token = authorization.split(" ", 1)[1]
+    """Get current user from JWT token"""
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
     try:
-        payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
-        sub = payload.get("sub")
-        if not sub:
-            raise HTTPException(401, detail="Invalid token")
+        payload = verify_token(credentials.credentials)
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise credentials_exception
     except JWTError:
-        raise HTTPException(401, detail="Invalid token")
-
-    result = await db.execute(select(User).where(User.id == sub))
-    user = result.scalar_one_or_none()
-    if not user:
-        raise HTTPException(401, detail="User not found")
+        raise credentials_exception
+    
+    user = await db.execute(select(User).where(User.id == user_id))
+    user = user.scalar_one_or_none()
+    
+    if user is None:
+        raise credentials_exception
+    
     return user
 
 
+async def get_current_admin(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: AsyncSession = Depends(get_db_session),
+) -> Admin:
+    """Get current admin from JWT token"""
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate admin credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
+    try:
+        payload = verify_token(credentials.credentials)
+        admin_id: str = payload.get("sub")
+        role: str = payload.get("role")
+        
+        if admin_id is None or role != "admin":
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    
+    admin = await db.execute(select(Admin).where(Admin.id == admin_id))
+    admin = admin.scalar_one_or_none()
+    
+    if admin is None or not admin.is_active:
+        raise credentials_exception
+    
+    return admin
+
+
 def require_roles(*roles: UserRole):
-    async def _dep(user: User = Depends(get_current_user)) -> User:
-        if roles and user.role not in roles:
-            raise HTTPException(403, detail="Insufficient role")
-        return user
-    return _dep
+    """Require specific user roles"""
+    def role_checker(current_user: User = Depends(get_current_user)) -> User:
+        if current_user.role not in roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not enough permissions"
+            )
+        return current_user
+    return role_checker
+
+
+def require_super_admin():
+    """Require super admin privileges"""
+    def super_admin_checker(current_admin: Admin = Depends(get_current_admin)) -> Admin:
+        if not current_admin.is_super_admin:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Super admin privileges required"
+            )
+        return current_admin
+    return super_admin_checker
 
 

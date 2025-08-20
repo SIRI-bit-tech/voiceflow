@@ -3,22 +3,25 @@ from pydantic import Field
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
-    app_name: str = Field(default="VoiceFlow CMS")
-    backend_cors_origins: str = Field(default="*")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    database_url: str = Field(
-        default="postgresql+asyncpg://vf:vfpass@localhost:5432/voiceflow"
-    )
-    redis_url: str = Field(default="redis://localhost:6379/0")
+    APP_NAME: str = "VoiceFlow CMS"
+    BACKEND_CORS_ORIGINS: str = "*"
 
-    jwt_secret_key: str = Field(default="change-me")
-    jwt_algorithm: str = Field(default="HS256")
-    jwt_access_token_expires_minutes: int = Field(default=60)
+    DATABASE_URL: str = "postgresql+asyncpg://vf:vfpass@localhost:5432/voiceflow"
+    REDIS_URL: str = "redis://localhost:6379/0"
 
-    cloudinary_cloud_name: str | None = None
-    cloudinary_api_key: str | None = None
-    cloudinary_api_secret: str | None = None
+    JWT_SECRET_KEY: str = "change-me"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_ACCESS_TOKEN_EXPIRES_MINUTES: int = 60
+
+    CLOUDINARY_CLOUD_NAME: str = ""
+    CLOUDINARY_API_KEY: str = ""
+    CLOUDINARY_API_SECRET: str = ""
+    
+    # Admin configuration
+    ADMIN_SECURITY_CODE: str = "ADMIN_SECURE_2024"
+
 
 settings = Settings()
 
