@@ -31,7 +31,7 @@ interface Room {
             <div 
               class="col-start-2 row-start-2 bg-indigo-600/20 border-2 border-indigo-400 rounded-lg p-4 cursor-pointer transition-all hover:bg-indigo-600/40"
               (click)="navigateToRoom('lobby')"
-              [class.bg-indigo-600/60]="currentRoom() === 'lobby'">
+              [ngClass]="{ 'bg-indigo-600/60': currentRoom() === 'lobby' }">
               <h3 class="text-lg font-bold">Lobby</h3>
               <p class="text-sm opacity-80">Main entrance</p>
             </div>
@@ -40,7 +40,7 @@ interface Room {
             <div 
               class="col-start-2 row-start-1 bg-green-600/20 border-2 border-green-400 rounded-lg p-4 cursor-pointer transition-all hover:bg-green-600/40"
               (click)="navigateToRoom('blog')"
-              [class.bg-green-600/60]="currentRoom() === 'blog'">
+              [ngClass]="{ 'bg-green-600/60': currentRoom() === 'blog' }">
               <h3 class="text-lg font-bold">Blog Room</h3>
               <p class="text-sm opacity-80">{{ getRoomContentCount('blog') }} posts</p>
             </div>
@@ -49,7 +49,7 @@ interface Room {
             <div 
               class="col-start-3 row-start-2 bg-purple-600/20 border-2 border-purple-400 rounded-lg p-4 cursor-pointer transition-all hover:bg-purple-600/40"
               (click)="navigateToRoom('pages')"
-              [class.bg-purple-600/60]="currentRoom() === 'pages'">
+              [ngClass]="{ 'bg-purple-600/60': currentRoom() === 'pages' }">
               <h3 class="text-lg font-bold">Pages Wing</h3>
               <p class="text-sm opacity-80">{{ getRoomContentCount('pages') }} pages</p>
             </div>
@@ -58,7 +58,7 @@ interface Room {
             <div 
               class="col-start-1 row-start-3 bg-yellow-600/20 border-2 border-yellow-400 rounded-lg p-4 cursor-pointer transition-all hover:bg-yellow-600/40"
               (click)="navigateToRoom('draft')"
-              [class.bg-yellow-600/60]="currentRoom() === 'draft'">
+              [ngClass]="{ 'bg-yellow-600/60': currentRoom() === 'draft' }">
               <h3 class="text-lg font-bold">Draft Corner</h3>
               <p class="text-sm opacity-80">{{ getRoomContentCount('draft') }} drafts</p>
             </div>
@@ -67,7 +67,7 @@ interface Room {
             <div 
               class="col-start-3 row-start-3 bg-red-600/20 border-2 border-red-400 rounded-lg p-4 cursor-pointer transition-all hover:bg-red-600/40"
               (click)="navigateToRoom('archive')"
-              [class.bg-red-600/60]="currentRoom() === 'archive'">
+              [ngClass]="{ 'bg-red-600/60': currentRoom() === 'archive' }">
               <h3 class="text-lg font-bold">Archive Basement</h3>
               <p class="text-sm opacity-80">{{ getRoomContentCount('archive') }} archived</p>
             </div>

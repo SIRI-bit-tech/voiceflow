@@ -24,3 +24,7 @@ def create_access_token(sub: str, expires_minutes: Optional[int] = None) -> str:
     return jwt.encode(to_encode, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
 
 
+# Decode and verify a JWT, returning its payload
+def verify_token(token: str) -> dict[str, Any]:
+    return jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
+

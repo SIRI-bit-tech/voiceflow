@@ -6,10 +6,31 @@ from ...db.session import get_db_session
 from ...models.user import User
 from ...models.voice_profile import VoiceProfile
 from ...services.speaker_id_service import SpeakerIdService
+from typing import Optional
 
 
 router = APIRouter(prefix="/api/voice/speaker", tags=["speaker"]) 
-svc = SpeakerIdService()
+
+# Lazy-init the heavy model to avoid startup failures (e.g., symlink issues on Windows)
+_svc: Optional[SpeakerIdService] = None
+
+
+def get_svc() -> SpeakerIdService:
+    global _svc
+    if _svc is None:
+        try:
+            _svc = SpeakerIdService()
+        except OSError as e:
+            # Provide a clearer error for common Windows symlink permission issues
+            raise HTTPException(
+                status_code=503,
+                detail=(
+                    "Speaker identification model failed to initialize. "
+                    "On Windows, enable Developer Mode or run as Administrator to allow symlinks, "
+                    "or disable the speaker-id feature. Original error: " + str(e)
+                ),
+            )
+    return _svc
 
 
 @router.get("/profile")
@@ -38,6 +59,7 @@ async def enroll(
         with open(p, 'wb') as f:
             f.write(await s.read())
         paths.append(p)
+    svc = get_svc()
     emb = await svc.average_embeddings(paths)
     pass_hash = hashlib.sha256(passphrase.encode()).hexdigest()
 
@@ -68,6 +90,7 @@ async def verify(
     p = f".cache/verify_{user.id}_{sample.filename}"
     with open(p, 'wb') as f:
         f.write(await sample.read())
+    svc = get_svc()
     probe = await svc.embed_file(p)
     ref = vp.embeddings.get("vector")
     score = svc.cosine_similarity(ref, probe)
