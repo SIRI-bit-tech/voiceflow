@@ -7,9 +7,10 @@ Base = declarative_base()
 
 
 engine = create_async_engine(
-    settings.database_url,
+    settings.DATABASE_URL,
     echo=False,
     pool_pre_ping=True,
+    future=True,
 )
 
 

@@ -16,11 +16,11 @@ router = APIRouter(prefix="/api/admin/auth", tags=["admin-auth"])
 redis_client = get_redis()
 
 
-@router.post("/register", response_model=AdminResponse)
+@router.post("/register", response_model=Token)
 async def register_admin(
     admin_data: AdminCreate,
     db: AsyncSession = Depends(get_db_session),
-) -> AdminResponse:
+) -> Token:
     """Register a new admin user"""
     # Check if admin registration is enabled
     registration_enabled = await redis_client.get("admin_registration_enabled")
@@ -63,12 +63,23 @@ async def register_admin(
     # Log admin creation
     await redis_client.lpush("admin_audit_log", f"Admin created: {admin.username}")
     
-    return AdminResponse(
-        id=admin.id,
-        username=admin.username,
-        email=admin.email,
-        is_super_admin=admin.is_super_admin,
-        created_at=admin.created_at
+    # Create access token for immediate login
+    access_token_expires = timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRES_MINUTES)
+    access_token = create_access_token(
+        data={"sub": str(admin.id), "role": "admin", "username": admin.username},
+        expires_delta=access_token_expires
+    )
+    
+    return Token(
+        access_token=access_token,
+        token_type="bearer",
+        admin=AdminResponse(
+            id=admin.id,
+            username=admin.username,
+            email=admin.email,
+            is_super_admin=admin.is_super_admin,
+            created_at=admin.created_at
+        )
     )
 
 

@@ -3,10 +3,14 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 from sqlalchemy.ext.asyncio import AsyncEngine
 import asyncio
+import sys
+import os
+
+# Add the backend directory to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.db.session import Base
-from app.models import user, workspace, content, voice_profile  # noqa: F401
-
+from app.models import user, workspace, content, voice_profile, admin  # noqa: F401
 
 config = context.config
 
@@ -17,8 +21,14 @@ target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
+    """Run migrations in 'offline' mode."""
     url = config.get_main_option("sqlalchemy.url")
-    context.configure(url=url, target_metadata=target_metadata, literal_binds=True)
+    context.configure(
+        url=url,
+        target_metadata=target_metadata,
+        literal_binds=True,
+        dialect_opts={"paramstyle": "named"},
+    )
 
     with context.begin_transaction():
         context.run_migrations()
@@ -31,21 +41,24 @@ def do_run_migrations(connection) -> None:
 
 
 async def run_migrations_online() -> None:
-    connectable = AsyncEngine(engine_from_config(
+    """Run migrations in 'online' mode."""
+    # Override the sqlalchemy.url to use sync driver for Alembic
+    url = config.get_main_option("sqlalchemy.url")
+    if url.startswith("postgresql+asyncpg://"):
+        url = url.replace("postgresql+asyncpg://", "postgresql://")
+    
+    connectable = engine_from_config(
         config.get_section(config.config_ini_section),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
-        future=True,
-    ))
+        url=url,
+    )
 
-    async with connectable.connect() as connection:
-        await connection.run_sync(do_run_migrations)
-    await connectable.dispose()
+    with connectable.connect() as connection:
+        do_run_migrations(connection)
 
 
 if context.is_offline_mode():
     run_migrations_offline()
 else:
     asyncio.run(run_migrations_online())
-
-

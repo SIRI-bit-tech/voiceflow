@@ -273,9 +273,12 @@ export class AdminRegisterPage {
         adminCode: this.adminData.adminCode
       });
       
-      if (response.id) {
-        // Registration successful, redirect to admin login
-        this.router.navigate(['/admin/login']);
+      if (response.access_token) {
+        // Store admin token and user data
+        localStorage.setItem('admin_token', response.access_token);
+        localStorage.setItem('admin_user', JSON.stringify(response.admin));
+        // Registration successful, redirect to admin dashboard
+        this.router.navigate(['/admin/dashboard']);
       } else {
         throw new Error('Invalid response from server');
       }
