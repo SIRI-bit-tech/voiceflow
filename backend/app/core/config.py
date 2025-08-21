@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "VoiceFlow CMS"
     BACKEND_CORS_ORIGINS: str = "*"
 
-    DATABASE_URL: str = "postgresql+asyncpg://vf:vfpass@localhost:5432/voiceflow"
+    DATABASE_URL: str = "postgresql+asyncpg://postgres.tbxoqrvcjdlnwaucujnp:emuesiri%%4012@aws-1-us-east-2.pooler.supabase.com:6543/postgres"
     REDIS_URL: str = "redis://localhost:6379/0"
 
     JWT_SECRET_KEY: str = "change-me"

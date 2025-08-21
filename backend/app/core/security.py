@@ -16,11 +16,17 @@ def verify_password(password: str, password_hash: str) -> bool:
     return pwd_context.verify(password, password_hash)
 
 
-def create_access_token(sub: str, expires_minutes: Optional[int] = None) -> str:
+def create_access_token(
+    sub: str,
+    expires_minutes: Optional[int] = None,
+    claims: Optional[dict[str, Any]] = None,
+) -> str:
     expire = datetime.utcnow() + timedelta(
         minutes=expires_minutes or settings.jwt_access_token_expires_minutes
     )
     to_encode: dict[str, Any] = {"sub": sub, "exp": expire}
+    if claims:
+        to_encode.update(claims)
     return jwt.encode(to_encode, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
 
 

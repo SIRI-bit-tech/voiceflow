@@ -20,8 +20,8 @@ class LoginRequest(BaseModel):
     password: str = Field(min_length=3)
 
 
-@router.post("/register", response_model=UserPublic)
-async def register(body: UserCreate, db: AsyncSession = Depends(get_db_session)) -> UserPublic:
+@router.post("/register")
+async def register(body: UserCreate, db: AsyncSession = Depends(get_db_session)) -> dict:
     exists = await db.execute(select(User).where((User.email == body.email) | (User.username == body.username)))
     if exists.scalar_one_or_none():
         raise HTTPException(400, detail="User already exists")
@@ -34,7 +34,13 @@ async def register(body: UserCreate, db: AsyncSession = Depends(get_db_session))
     db.add(user)
     await db.commit()
     await db.refresh(user)
-    return UserPublic.model_validate(user)
+    token = create_access_token(str(user.id), claims={"username": user.username})
+    return {"access_token": token, "token_type": "bearer", "user": {
+        "id": str(user.id),
+        "username": user.username,
+        "email": user.email,
+        "role": user.role.value,
+    }}
 
 
 @router.post("/login")

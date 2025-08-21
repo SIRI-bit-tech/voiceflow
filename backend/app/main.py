@@ -7,9 +7,15 @@ from .api.routers.streaming import router as streaming_router
 
 app = FastAPI(title=settings.app_name)
 
+# Configure CORS
+origins_raw = settings.backend_cors_origins or ""
+configured = [o.strip() for o in origins_raw.split(",") if o.strip()]
+local_dev = ["http://localhost:4200", "http://127.0.0.1:4200"]
+allow_list = list({*configured, *local_dev}) if configured else local_dev
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in settings.backend_cors_origins.split(",")],
+    allow_origins=allow_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

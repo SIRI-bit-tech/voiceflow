@@ -1,19 +1,24 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from datetime import datetime
 from typing import Optional
 
 
 class AdminCreate(BaseModel):
+    # Accept both snake_case and camelCase (adminCode)
+    model_config = ConfigDict(populate_by_name=True)
+
     username: str
     email: EmailStr
     password: str
-    admin_code: str
+    admin_code: str = Field(alias="adminCode")
 
 
 class AdminLogin(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     username: str
     password: str
-    admin_code: str
+    admin_code: str = Field(alias="adminCode")
 
 
 class AdminResponse(BaseModel):
